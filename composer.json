@@ -1,0 +1,14 @@
+{
+    "name": "cosette/cosette",
+    "authors": [
+        {
+            "name": "Cosette Newberry",
+            "email": "elladelille@gmail.com"
+        }
+    ],
+    "require": {
+        "monolog/monolog": "^1.16",
+        "slim/slim-skeleton": "^2.1",
+        "swiftmailer/swiftmailer": "^5.4"
+    }
+}

@@ -1,0 +1,38 @@
+{% extends 'main.twig' %}
+	
+	{% block header %}
+		<div id="center-me">
+			<h2>Hello World!</h2>
+		</div>
+	{% endblock header %}
+	
+	{% block content %}
+		<form class="form" align="center">
+			<fieldset>
+				<div class="formBlock">
+					<input name="name" type="text" placeholder="What shall I call you?" class="u-full-width">
+				</div>
+
+				<div class="formBlock">
+					<input name="email" type="email" placeholder="What is your email address?" class="u-full-width">
+				</div>
+
+				<div class="textBlock">
+					<textarea name="msg" class="u-full-width" placeholder="Your discussion points please."></textarea>
+				</div>
+			</fieldset>
+
+			<div class="button">
+				<input class="button-primary" type="submit" value="Go!" align="center" id="button">
+			</div>
+		</form>
+	
+	<div class="12 columns" id="center-me">
+		
+		{{ results }}
+		
+	</div>
+			
+	{% endblock content %}	
+
+	
