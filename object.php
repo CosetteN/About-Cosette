@@ -14,7 +14,7 @@ $data = array(
     foreach($jobs as $job){
     	'events' => array(
     		'media' => array(
-                'url' => "",
+                'url' => "{",
                 'credit' => "",
             ),
             'start_date' => array(
