@@ -36,61 +36,114 @@
 	$app->get('/', function() use($app){$app->render('cosette.twig');})
 		->name('home');
 
+		/* Path for the details page.  Build object to become timeline. */
+	$app->get('/details', function() use($app, $db)
+	{
+		$events = array();
+
+		if ($db) {
+			$query = $db->prepare(
+				"SELECT *
+					FROM resume" 
+			);
+
+			if($query->execute())
+			{
+				$rows = $query->fetchALL();
+
+				/* Pull in resume details from the website. */
+				foreach($rows as $row) {
+					$image = 	$row['image'];
+					$time = 	$row['time_spent'];
+					$headline = $row['position'];
+					$company = 	$row['company'];
+					$text1 = 	$row['detail_1'];
+					$text2 = 	$row['detail_2'];
+					$text3 = 	$row['detail_3'];
+					$text4 = 	$row['detail_4'];
+
+					$events[] = array(
+							'media' => array( 'url' => $row['image'] ),
+					       
+					        'start_date' => array( 'year' => "2015" ),
+					        
+					        'display_date' => array( 'dates' => $time ),
+					        
+					        'text' => array(
+					            'headline'  => $headline . " at " . $company,
+					            'text'      => $text1 . "</br> " . $text2 . "</br> " 
+					            	. $text3 . "</br> " . $text4,
+					        ),
+					);
+				}
+		    }
+		/* Title and 'fixed' portion of json object for timeline. */
+		$data = array(
+			'title' => array(
+				'media' => array(
+				'url' => "{{ static_url }}/img/face.jpg",
+				),
+				'text' => array(
+			          "headline" => "Experience & Education",
+			    )
+			),
+			'events' => $events,
+		);
+		
+		/* Turn resume array into a json string. */
+		$timeline = json_encode($data);
+	}
+echo "<pre>";
+print_r($timeline);	
+	$app->render('details.twig', array('timeline' => $timeline)); 
+	})->name('details');
+
 	/* 
 	* Path for the contact page, database call to insert random quote at bottom
 	* of contact form. 
 	*/
-	$app->get('/contact', function() use($app, $db){
+	$app->get('/contact', function() use($app, $db)
+	{
 		$quote_id = rand(1, 16);
 
-		$results = $db->query(
-			"SELECT quote, author 
-				FROM quotes 
-				WHERE quote_id 	= '$quote_id'"
-		);
+		if ($db) {
+			$query = $db->prepare(
+				"SELECT quote, author 
+					FROM quotes 
+					WHERE quote_id = :ID"
+			);
+			
+			$query->bindParam(":ID", $quote_id);
 
-		$app->render('contact.twig', array(
-			'quote'=> $results['0'],
-			'author' => $results['1'])
-		);
+			if($query->execute())
+			{
+				$row = $query->fetch();
+				$quote = $row['quote'];
+				$author = $row['author'];
+
+			}
+		}
+		
+	$app->render('contact.twig', array(
+			'quote' => '"' . $quote . '"',
+			'author' => $author
+	));
+
 	})->name('contact');
-
-	/* Path for the details page.  Build object to become timeline. */
-	$app->get('/details', function() use($app){$app->render('details.twig');})
-		->name('details');
-	$data = array();
-
-	// /* 
-	// * Timeline has static title info and dynamic 
-	// * (from database) job details. (Store image path, not images in database. 
-	// */
-	// $data['title'] = array(
-	// 	'blah' =>'blah',
-	// );
-
-	// $data['events'] = array();
-
-	// //db stuff
-
-	// $foreach ($results as $result) {
-	// 	//build array
-	// 	$data['events'][] = array();
-
-	// }
-	// /* turn object into a string for timeline */
-	// $timeline = json__encode($data);
-
+	
 	// Get post data from the contact form //
 	$app->post('/contact', function() use($app){
 		$name = $app->request->post('name');
 		$email = $app->request->post('email');
 		$msg = $app->request->post('msg');
 
+		/* If every field was filled, sanitize them all. */
 		if(!empty($name) && !empty($email) && !empty($msg)){
 			$cleanName = filter_var($name, FILTER_SANITIZE_STRING);
 			$cleanEmail = filter_var($email, FILTER_SANITIZE_EMAIL);
 			$cleanMsg = filter_var($msg, FILTER_SANITIZE_STRING);
 
+		// /* If name is empty but other fields have content. */
 		// } else if(empty($name) && !empty($email) && !empty($msg)) {
 		// 	/*
 		// 	* send message about incomplete fields and send back to contact form.
@@ -100,11 +153,13 @@
 		// 	$app->flash('fail', 'Anonymous is for hacking, not making connections.' 
 		// 		'Your name please. ');
 		// 	$app->redirect('contact');
-		
+			
+		// /* If email is empty but other fields have content. */	
 		// } else if(!empty($name) && empty($email) && !empty($msg)) {
 		// 	$app->flash('fail', "I'll need an actual email address to answer you.");
 		// 	$app->redirect('contact');
 
+		// /* If text message is empty but other fields have content. */
 		// } else if(!empty($name) && !empty($email) && empty($msg)) {
 		// 	$app->flash('fail', "You forgot your words of wisdom!  Fill in the "
 		// 	. "message field please!" );
@@ -142,9 +197,21 @@
 			$app->redirect(' ');
 		} else {
 			// Send a message that email failed to send & log as error //
-			$app->flash('fail', "Something went wrong and your message didn't "
-				. "send.  Please try again later.");
+			$app->flash('fail', "Something went wrong and your message didn't send. "
+				. "Please try again later.");
 			$app->redirect('contact');	
+		}
+
+		/* Insert details into contacts database as back up to email sent. */
+		$stmt->bindParam(':name', $cleanName);
+		$stmt->bindParam(':email', $cleanEmail);
+		$stmt->bindParam(':msg', $cleanMsg);
+
+		if ($db) {
+			$query = $db->prepare(
+				"INSERT INTO contacts (name, email, message) 
+					VALUES (:name, :email, :msg);"
+			);
 		}
 	});		
 
