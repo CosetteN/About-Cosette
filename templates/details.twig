@@ -1,41 +1,21 @@
 {% extends 'main.twig' %}
 	
+
 	{% block content %}
 		
-	{
-	    "title": {
-	        "media": {
-	          "url": "{{ static_url }}/img/face.jpg",
-	         	          
-	        },
-	        "text": {
-	          "headline": "Experience & Education",
-	          "text": "<p>A visual history of my serpentine career path.  A broad swath of experience that's left me remarkably adaptable, capable, and ready to suceed. </p>"
-	        }
-	    },
+		<script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js">
+		</script>
 
-	    "events": [
-	      {
-	        "media": {
-	          "url": "{{ static_url }}/img/LAMPCamp2.png",
-	          "credit": "LAMP Camp:<a href='http://lampcamp.guru/'>
-	        },
-	        "start_date": {
-	          "month": "8",
-	          "day": "10",
-	          "year": "2015"
-	        },
-	        "text": {
-	          "headline": "Burgeoning Developer",
-	          "text": "<ul>
-	          	<li>Code creation: from tiny fixes on existing code to creating methods from scratch.</li>
-	          	<li>Review and testing of my own and other camper's code.</li>
-	          	<li>Working with proprietary framework to connect to multiple sales channels through API (Amazon, MWS, Magento, Big Commerce, Ebay).</li>
-	          	<li>Developing business case solutions for real world application.</li>
-	          	</ul>"
-	        }
-	    ]
-	}
+		<div id='timeline-embed' style="width: 100%; height: 600px"></div>
 
-
+		<script type="text/javascript">
+			           	
+           	var timeline = new TL.Timeline('timeline-embed', {{ timeline }});
+           	
+           	window.onresize = function(event) 
+           	{
+           		timeline.updateDisplay();
+           	}
+   		</script>
+	
 	{% endblock content %}
