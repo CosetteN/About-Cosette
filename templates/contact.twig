@@ -10,18 +10,15 @@
 		<form class="form" align="center">
 			<fieldset>
 				<div class="formBlock">
-					<input name="name" type="text" placeholder="What shall I call 
-						you?" class="u-full-width">
+					<input name="name" type="text" placeholder="What shall I call you?" class="u-full-width">
 				</div>
 
 				<div class="formBlock">
-					<input name="email" type="email" placeholder="What is your email 
-						address?" class="u-full-width">
+					<input name="email" type="email" placeholder="What is your email address?" class="u-full-width">
 				</div>
 
 				<div class="textBlock">
-					<textarea name="msg" class="u-full-width" placeholder="Your 
-						discussion points please."></textarea>
+					<textarea name="msg" class="u-full-width" placeholder="Your discussion points please."></textarea>
 				</div>
 			</fieldset>
 
@@ -30,9 +27,12 @@
 			</div>
 		</form>
 	
-	<div class="12 columns" id="center-me">
+	<div class="textblock" align="center">
 		
-		{{ results }}
+		<ul>
+			<li><h6>{{ quote }}</h6></li>
+			<li><h6>{{ author }}</h6></li>
+		</ul>
 		
 	</div>
 			
