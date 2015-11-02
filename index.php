@@ -132,10 +132,10 @@ print_r($timeline);
 	})->name('contact');
 	
 	// Get post data from the contact form //
-	$app->post('/contact', function() use($app){
-		$name = $app->request->post('name');
-		$email = $app->request->post('email');
-		$msg = $app->request->post('msg');
+	$app->post('/contact', function() use($app, $db){
+		$name = trim($app->request->post('name'));
+		$email = trim($app->request->post('email'));
+		$msg = trim($app->request->post('msg'));
 
 		/* If every field was filled, sanitize them all. */
 		if(!empty($name) && !empty($email) && !empty($msg)){
@@ -143,42 +143,36 @@ print_r($timeline);
 			$cleanEmail = filter_var($email, FILTER_SANITIZE_EMAIL);
 			$cleanMsg = filter_var($msg, FILTER_SANITIZE_STRING);
 
-		// /* If name is empty but other fields have content. */
-		// } else if(empty($name) && !empty($email) && !empty($msg)) {
-		// 	/*
-		// 	* send message about incomplete fields and send back to contact form.
-		// 	* Flash message info is in flash.twig
-		// 	* {% include 'flash.twig' %} is in main.twig at start of body.
-		// 	*/
-		// 	$app->flash('fail', 'Anonymous is for hacking, not making connections.' 
-		// 		'Your name please. ');
-		// 	$app->redirect('contact');
+			if ($db) {
+				$query = $db->prepare(
+					"INSERT INTO contacts (name, email, message) 
+						VALUES (:name, :email, :msg);"
+				);
+			}
+			/* Insert details into contacts database as back up to email sent. */
+			$query->bindParam(':name', $cleanName);
+			$query->bindParam(':email', $cleanEmail);
+			$query->bindParam(':msg', $cleanMsg);
+
+			$query->execute();
 			
-		// /* If email is empty but other fields have content. */	
-		// } else if(!empty($name) && empty($email) && !empty($msg)) {
-		// 	$app->flash('fail', "I'll need an actual email address to answer you.");
-		// 	$app->redirect('contact');
-
-		// /* If text message is empty but other fields have content. */
-		// } else if(!empty($name) && !empty($email) && empty($msg)) {
-		// 	$app->flash('fail', "You forgot your words of wisdom!  Fill in the "
-		// 	. "message field please!" );
-		// 	$app->redirect('contact');
-
+		/* If any field is blank*/
 		} else {
-			$app->flash('fail', 'Little trigger happy with the go button there '
-				. "buddy?  Try again. Fill all the fields please.");
-		$app->redirect('contact');
+			/*
+			* send message about incomplete fields and send back to contact form.
+			* Flash message info is in flash.twig
+			* {% include 'flash.twig' %} is in main.twig at start of body.
+			*/
+			$app->flash('fail', "Your name, a complete email address, and
+				the reason for your reaching out are all required for us to make a 
+				meaingful connection");
+			$app->redirect('contact');
 		}
-
+			
 		/* details for email to be sent */
-		$transport = Swift_SmtpTransport::newInstance(
-			'smtp.gmail.com', 
-			465, 
-			'ssl'
-			)
+		$transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl')
 				->setUsername('elladelille')
-				->setPassword('nepeeykxfldupduk');
+				->setPassword('siwfjtmthiwkssri');
 		$mailer = Swift_Mailer::newInstance($transport);
 
 		$message = Swift_Message::newInstance()
@@ -191,7 +185,7 @@ print_r($timeline);
 		$result = $mailer->send($message);
 
 		if($result > 0) {
-			
+						
 			// Send message confirming success & route back to about page //
 			$app->flash('success', "Thanks. Can't wait to read it!");
 			$app->redirect(' ');
@@ -200,18 +194,6 @@ print_r($timeline);
 			$app->flash('fail', "Something went wrong and your message didn't send. "
 				. "Please try again later.");
 			$app->redirect('contact');	
-		}
-
-		/* Insert details into contacts database as back up to email sent. */
-		$stmt->bindParam(':name', $cleanName);
-		$stmt->bindParam(':email', $cleanEmail);
-		$stmt->bindParam(':msg', $cleanMsg);
-
-		if ($db) {
-			$query = $db->prepare(
-				"INSERT INTO contacts (name, email, message) 
-					VALUES (:name, :email, :msg);"
-			);
 		}
 	});		
 
