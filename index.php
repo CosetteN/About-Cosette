@@ -53,27 +53,26 @@
 
 				/* Pull in resume details from the website. */
 				foreach($rows as $row) {
-					$image = 	$row['image'];
-					$time = 	$row['time_spent'];
-					$headline = $row['position'];
-					$company = 	$row['company'];
-					$text1 = 	$row['detail_1'];
-					$text2 = 	$row['detail_2'];
-					$text3 = 	$row['detail_3'];
-					$text4 = 	$row['detail_4'];
+					$start 		= $row['start'];
+					$end 		= $row['end'];
+					$time 		= $row['time_spent'];
+					$headline 	= $row['position'];
+					$company 	= $row['company'];
+					$image 		= $row['image'];
+					$text1 		= $row['detail_1'];
+					$text2 		= $row['detail_2'];
+					$text3 		= $row['detail_3'];
+					$text4 		= $row['detail_4'];
 
 					$events[] = array(
-		//					'media' => array( 'url' => $row['image'] ),
-					       
-					        'start_date' => array( 'year' => "2015" ),
-					        		        
+							'media' => array( 'url' => $image ),
+					        'start_date' => array( 'year' => $start ),
+					        'end_date' => array( 'year' => $end ),		        		        
 					        'text' => array(
 					            'headline'  => $headline . " at " . $company,
 					            'text'      => $text1 . "</br> " . $text2 . "</br> "
 					            	. $text3 . "</br> " . $text4,
-					        ),
-
-					        'display_date' => $time,
+					        ),       
 					);
 				}
 		    }
@@ -81,7 +80,7 @@
 		$data = array(
 			'title' => array(
 				'media' => array(
-				'url' => "https://lh3.googleusercontent.com/UB0PG1WImDl-YTCLQoDAZiOlI-wtLMFMl3bI-530xdxRUiErKmfhzwZDJCpjkvrBZ0ZoG2TN-Dj9Pc-klx_KJafgbFFAH_pyMvAOtphtOeqg2VSi2o1z-p7SN-srIy2f9biJafZUwfmzhFrq6wd1LU-uLGou0NHwJO4ixKUoc-n0IdocZf-CPslNw4pYbekZ68dAt9j_7fBjEkQ9L9KryOUosGXa7c3mUXtwJIX-myFub3U-MDLDtsWfwfncjV3r1BrkU0PoEBEnZjpEavVVsiAFkd80hY8ZYaLnRS1sALBx7VWWj2zgVzq1_mA8kcmOR9qBtOmna3ezEiv9cMPqE6VoKg1fyIUXEgD5Nm_f5yoPNyjVnI1D4i-QAvtrKhtcrpWsjcvYEs6s0LSY_qzDyJTtYcE6qa0f9A4fwPcIz-L7PYqSSkPohvP7-pCp9n7bBNZO5g2N_xrMuqAo7z_ejH0IWW9lkL0-05qaoML9LSakJSAeCZmm-_-VJLpgUtpyjijM5dPTZKoHp9ouF9oLonwCkWfVTI5TpRqyR_ffuHrG=w847-h477-no",
+					'url' => "img/face.jpg",
 				),
 				'text' => array(
 			          "headline" => "Experience & Education",
