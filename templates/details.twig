@@ -2,20 +2,19 @@
 	
 
 	{% block content %}
-		
-		<script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js">
-		</script>
 
 		<div id='timeline-embed' style="width: 100%; height: 600px"></div>
 
 		<script type="text/javascript">
-			           	
-           	var timeline = new TL.Timeline('timeline-embed', {{ timeline }});
+
+            var options = { start_at_end: "true" }
+
+            var data = {{ timeline | raw}}
+
+           	window.timeline = new TL.Timeline('timeline-embed', data, options);
+
+            console.log('%o', window.timeline);
            	
-           	window.onresize = function(event) 
-           	{
-           		timeline.updateDisplay();
-           	}
    		</script>
 	
 	{% endblock content %}
