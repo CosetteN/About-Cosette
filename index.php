@@ -169,8 +169,8 @@
 			
 		/* details for email to be sent */
 		$transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl')
-				->setUsername('elladelille')
-				->setPassword('siwfjtmthiwkssri');
+				->setUsername('placeholder')
+				->setPassword('placeholder');
 		$mailer = Swift_Mailer::newInstance($transport);
 
 		$message = Swift_Message::newInstance()
