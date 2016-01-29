@@ -5,4 +5,4 @@ install:
   - tar -xvf /tmp/casper.tar.gz
   - export PATH=$PATH:$PWD/casperjs-1.0.2/bin/
   
-script: phantomjs Test.js
+script: casper.js test Test.js
