@@ -34,7 +34,7 @@
 	$app->get('/', function() use($app){$app->render('cosette.twig');})
 		->name('home');
 
-		/* Path for the details page.  Build object to become timeline. */
+	/* Path for the details page.  Build object to become timeline. */
 	$app->get('/details', function() use($app, $db)
 	{
 		$events = array();
