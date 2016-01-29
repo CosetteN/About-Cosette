@@ -3,7 +3,6 @@ language: php
 install:
   - git clone git://github.com/n1k0/casperjs.git
   - cd casperjs
-  - php vendor/vendors.php
   
 before_script:
   - wget https://github.com/n1k0/casperjs/archive/1.0.2.tar.gz -O /tmp/casper.tar.gz
