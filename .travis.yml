@@ -4,4 +4,4 @@ php:
   - 5.4
   - 7.0
   - hhvm
-script: phpunit Test.php
+script: casperjs test.js
