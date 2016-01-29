@@ -4,7 +4,7 @@
 	date_default_timezone_set('America/New_York');
 
 	/**
-	* Calls the Namespace Slim & the class slim from vendor/slim/slim/Slim then 
+	* Calls the Namespace Slim & the class slim from vendor/slim/slim/Slim then
 	* passes teh array of Twig views in to override the Slim view. Make pretty
 	* Urls.
 	*/
@@ -14,13 +14,13 @@
 	$view = $app->view();
 	$view->parserOptions = array('debug' => true,);
 
-	/* 
-	* enable Slim's middleware to allow for Flash.  Takes place of PHP 
-	* Session_startS $app->add(new \Slim\Middleware\SessionCookie()); 
+	/**
+	* enable Slim's middleware to allow for Flash.  Takes place of PHP
+	* Session_startS $app->add(new \Slim\Middleware\SessionCookie());
 	*/
 	$app->add(new \Slim\Middleware\SessionCookie());
 
-	/*
+	/**
 	* Allows Twig helpers for internal & html routing.  urlFor, siteUrl, baseUrl
 	* & currentUrl
 	*/
@@ -30,9 +30,7 @@
 	$dsn = 'mysql:dbname=' . DB_NAME . ';host=' . DB_HOST;
 	$db = new PDO($dsn, DB_USER, DB_PASSWORD);
 
-	/*
-	* Path for the home page.  So it doesn't read index.php.
-	*/
+	/* Path for the home page.  So it doesn't read index.php. */
 	$app->get('/', function() use($app){$app->render('cosette.twig');})
 		->name('home');
 
@@ -44,7 +42,7 @@
 		if ($db) {
 			$query = $db->prepare(
 				"SELECT *
-					FROM resume" 
+					FROM resume"
 			);
 
 			if($query->execute())
@@ -67,12 +65,12 @@
 					$events[] = array(
 							'media' => array( 'url' => $image ),
 					        'start_date' => array( 'year' => $start ),
-					        'end_date' => array( 'year' => $end ),		        		        
+					        'end_date' => array( 'year' => $end ),
 					        'text' => array(
 					            'headline'  => $headline . " at " . $company,
 					            'text'      => $text1 . "</br> " . $text2 . "</br> "
 					            	. $text3 . "</br> " . $text4,
-					        ),       
+					        ),
 					);
 				}
 		    }
@@ -88,17 +86,17 @@
 			),
 			'events' => $events,
 		);
-		
+
 		/* Turn resume array into a json string. */
 		$timeline = json_encode($data);
 	}
 
-	$app->render('details.twig', array('timeline' => $timeline)); 
+	$app->render('details.twig', array('timeline' => $timeline));
 	})->name('details');
 
-	/* 
+	/*
 	* Path for the contact page, database call to insert random quote at bottom
-	* of contact form. 
+	* of contact form.
 	*/
 	$app->get('/contact', function() use($app, $db)
 	{
@@ -106,11 +104,11 @@
 
 		if ($db) {
 			$query = $db->prepare(
-				"SELECT quote, author 
-					FROM quotes 
+				"SELECT quote, author
+					FROM quotes
 					WHERE quote_id = :ID"
 			);
-			
+
 			$query->bindParam(":ID", $quote_id);
 
 			if($query->execute())
@@ -121,14 +119,14 @@
 
 			}
 		}
-		
+
 	$app->render('contact.twig', array(
 			'quote' => '"' . $quote . '"',
 			'author' => $author
 	));
 
 	})->name('contact');
-	
+
 	// Get post data from the contact form //
 	$app->post('/contact', function() use($app, $db){
 		$name = trim($app->request->post('name'));
@@ -143,7 +141,7 @@
 
 			if ($db) {
 				$query = $db->prepare(
-					"INSERT INTO contacts (name, email, message) 
+					"INSERT INTO contacts (name, email, message)
 						VALUES (:name, :email, :msg);"
 				);
 			}
@@ -153,7 +151,7 @@
 			$query->bindParam(':msg', $cleanMsg);
 
 			$query->execute();
-			
+
 		/* If any field is blank*/
 		} else {
 			/*
@@ -162,11 +160,11 @@
 			* {% include 'flash.twig' %} is in main.twig at start of body.
 			*/
 			$app->flash('fail', "Your name, a complete email address, and
-				the reason for your reaching out are all required for us to make a 
+				the reason for your reaching out are all required for us to make a
 				meaingful connection");
 			$app->redirect('contact');
 		}
-			
+
 		/* details for email to be sent */
 		$transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl')
 				->setUsername('placeholder')
@@ -183,7 +181,7 @@
 		$result = $mailer->send($message);
 
 		if($result > 0) {
-						
+
 			// Send message confirming success & route back to about page //
 			$app->flash('success', "Thanks. Can't wait to read it!");
 			$app->redirect(' ');
@@ -191,8 +189,8 @@
 			// Send a message that email failed to send & log as error //
 			$app->flash('fail', "Something went wrong and your message didn't send. "
 				. "Please try again later.");
-			$app->redirect('contact');	
+			$app->redirect('contact');
 		}
-	});		
+	});
 
 $app->run();
