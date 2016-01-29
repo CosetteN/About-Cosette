@@ -1,2 +1,2 @@
 
-script: phantomjs test.js
+script: phantomjs Test.js
