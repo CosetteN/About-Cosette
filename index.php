@@ -127,7 +127,7 @@
 
 	})->name('contact');
 
-	// Get post data from the contact form //
+	/* Get post data from the contact form */
 	$app->post('/contact', function() use($app, $db){
 		$name = trim($app->request->post('name'));
 		$email = trim($app->request->post('email'));
