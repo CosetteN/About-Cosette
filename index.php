@@ -94,7 +94,7 @@
 	$app->render('details.twig', array('timeline' => $timeline));
 	})->name('details');
 
-	/*
+	/**
 	* Path for the contact page, database call to insert random quote at bottom
 	* of contact form.
 	*/
