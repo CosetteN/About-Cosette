@@ -1,7 +1,2 @@
-language: php
-php:
-  - 5.5
-  - 5.4
-  - 7.0
-  - hhvm
-script: casperjs test.js
+
+script: phantomjs test.js
