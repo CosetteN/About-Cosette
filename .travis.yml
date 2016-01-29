@@ -1,8 +1,9 @@
 language: php
 
 install:
-  - wget https://github.com/n1k0/casperjs/archive/1.0.2.tar.gz -O /tmp/casper.tar.gz
-  - tar -xvf /tmp/casper.tar.gz
-  - export PATH=$PATH:$PWD/casperjs-1.0.2/bin/
+  - "export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'"
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
   
-script: casper.js test Test.js
+script: 
+  - "DISPLAY=:99.0 ./bin/casperjs test tests/suites"
